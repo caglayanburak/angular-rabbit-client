@@ -1,0 +1,56 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+
+    <img width="300" alt="Angular Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/RabbitMQ_logo.svg/1280px-RabbitMQ_logo.svg.png">
+</div>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h2>Waiting Queues</h2>
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let queue of waitingQueues">
+                <h6>{{queue.name}}
+                    <button class="badge badge-danger" (click)="purge(queue.name)">Purge <span class="badge badge-light">{{queue.messages}}</span></button>
+                    <button type="button" class="badge badge-light">
+                  Consumers <span [ngClass]="queue.consumers == 0 ? 'badge badge-danger' : 'badge badge-success'">{{queue.consumers}}</span>
+                  <span class="sr-only">unread messages</span>
+                </button>
+                </h6>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h2>Error Queues</h2>
+
+        <div class="accordion" id="accordionExample">
+            <div class="card" *ngFor="let queue of errorQueues">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+
+                        <h6>{{queue.name}}
+                            <button type="button" class="badge badge-success" (click)="shovel(queue.name)"> Requeue <span class="badge badge-light">{{queue.messages}}</span></button>
+                            <button class="badge badge-danger" (click)="purge(queue.name)">Purge <span class="badge badge-light">{{queue.messages}}</span></button>
+                            <button class="btn btn-link" type="button" (click)="getMessages(queue.name,queue.messages)" data-toggle="collapse" [attr.data-target]="'#collapse_' + queue.name" aria-expanded="true" aria-controls="collapseOne">
+                              Getir
+                            </button>
+                        </h6>
+                    </h2>
+                </div>
+
+                <div id="collapse_{{queue.name}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let message of messageDetails">
+                                {{message.properties.headers['MT-Fault-Message']}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>
