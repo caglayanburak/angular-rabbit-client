@@ -10,7 +10,7 @@ import { queue } from 'rxjs/internal/scheduler/queue';
 })
 export class AppComponent {
   title = 'rabbit-client';
-  messageDetails: Array<any> = new Array<any>();
+  groupResult: any;
   waitingQueues: Array<any>;
   errorQueues: Array<any>;
   apiUrl = "http://localhost:15672";
@@ -73,7 +73,7 @@ export class AppComponent {
       }
     };
     this.httpClient.put(this.apiUrl + '/api/parameters/shovel/%2F/Move%20from%20' + queueName, payload, options).subscribe(result => {
-     
+
     });
   }
 
@@ -81,7 +81,29 @@ export class AppComponent {
     var options = this.prepareHeaderOption();
     var payload = { "name": queueName, "count": messageCount, "requeue": true, "encoding": "auto", ackmode: "ack_requeue_true" };
     this.httpClient.post<Array<any>>(this.apiUrl + '/api/queues/%2F/' + queueName + '/get', payload, options).subscribe(result => {
-      this.messageDetails = result;
+
+      let t = result.map(({ properties }) => properties).map(({ headers }) => headers);
+      let messages = new Array<any>();
+      t.forEach(item => {
+        messages.push(item['MT-Fault-Message']);
+      })
+      var counts = messages.reduce((p, c) => {
+        var name = c;
+        if (!p.hasOwnProperty(name)) {
+          p[name] = 0;
+        }
+        p[name]++;
+        return p;
+      }, {});
+
+      console.log(counts);
+
+      this.groupResult = Object.keys(counts).map(k => {
+        return { name: k, count: counts[k] };
+      });
+
+
+      //  var groupResult = messages.reduce((a, c) => (a[c] = (a[c] || 0) + 1, a), Object.create(null));
     });
   }
 }

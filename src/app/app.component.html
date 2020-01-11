@@ -42,8 +42,8 @@
                 <div id="collapse_{{queue.name}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
                         <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let message of messageDetails">
-                                {{message.properties.headers['MT-Fault-Message']}}
+                            <li class="list-group-item" *ngFor="let message of groupResult">
+                                <label class="badge badge-secondary">{{message.name}} <span class="badge badge-light">{{message.count}}</span></label>
                             </li>
                         </ul>
                     </div>
