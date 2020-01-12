@@ -1,8 +1,19 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-
-    <img width="300" alt="Angular Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/RabbitMQ_logo.svg/1280px-RabbitMQ_logo.svg.png">
+<div class="header">
+    <a href="#default" class="logo"> <img width="300" alt="Angular Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/RabbitMQ_logo.svg/1280px-RabbitMQ_logo.svg.png"></a>
+    <div class="header-right">
+        <select>
+          <option>Enviroments</option>
+        </select>
+        <label>Refreshed:</label> <select name="" id="" (change)="changeRefresh($event.target.value)">
+          <option [value]="5">5 seconds</option>
+          <option [value]="10">10 seconds</option>
+          <option [value]="30">30 seconds</option>
+          <option [value]="0">No Refresh</option>
+        </select>
+    </div>
 </div>
+
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <h2>Waiting Queues</h2>
@@ -32,8 +43,8 @@
                         <h6>{{queue.name}}
                             <button type="button" class="badge badge-success" (click)="shovel(queue.name)"> Requeue <span class="badge badge-light">{{queue.messages}}</span></button>
                             <button class="badge badge-danger" (click)="purge(queue.name)">Purge <span class="badge badge-light">{{queue.messages}}</span></button>
-                            <button class="btn btn-link" type="button" (click)="getMessages(queue.name,queue.messages)" data-toggle="collapse" [attr.data-target]="'#collapse_' + queue.name" aria-expanded="true" aria-controls="collapseOne">
-                              Getir
+                            <button class="badge badge-warning" type="button" (click)="getMessages(queue.name,queue.messages)" data-toggle="collapse" [attr.data-target]="'#collapse_' + queue.name" aria-expanded="true" aria-controls="collapseOne">
+                              Error Messages <span class="badge badge-light">{{queue.messages}}</span>
                             </button>
                         </h6>
                     </h2>
@@ -41,11 +52,25 @@
 
                 <div id="collapse_{{queue.name}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
+                        <h5>Error Messages</h5>
                         <ul class="list-group">
                             <li class="list-group-item" *ngFor="let message of groupResult">
                                 <label class="badge badge-secondary">{{message.name}} <span class="badge badge-light">{{message.count}}</span></label>
                             </li>
                         </ul>
+                        <hr class="my-4">
+                        <h5>Code Locations</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let codeLocation of codeLocations">
+                                <a class="btn btn-primary" href="{{codeLocation.html_url}}" target="_blank" role="button">{{codeLocation.full_name}}</a>
+                            </li>
+                        </ul>
+                        <hr class="my-4">
+                        <h5>All Payloads</h5>
+                        <textarea style="width: 100%;height:300px" [(ngModel)]="allPayloads">
+                        
+                        </textarea>
+                        <button class="btn btn-success" (click)="publishMessage(queue.name)">Publish</button>
                     </div>
                 </div>
             </div>
